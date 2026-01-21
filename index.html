@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FR-Alerte PWA</title>
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<h1>FR-Alerte PWA</h1>
+<p>Notifications prêtes à recevoir les alertes</p>
+<audio id="alerteSound" src="alerte1.mp3"></audio>
+
+<script src="firebase-app.js"></script>
+<script src="firebase-messaging.js"></script>
+<script>
+  // Config Firebase (remplace par ton projet)
+  const firebaseConfig = {
+    apiKey: "VOTRE_API_KEY",
+    authDomain: "VOTRE_PROJET.firebaseapp.com",
+    projectId: "VOTRE_PROJET",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  const messaging = firebase.messaging();
+
+  // Demande permission pour les notifications
+  Notification.requestPermission().then(permission => {
+    if(permission === 'granted'){
+      messaging.getToken().then(token => {
+        console.log("TOKEN FCM:", token);
+      });
+    }
+  });
+
+  // Réception notification
+  messaging.onMessage(payload => {
+    console.log('Message reçu', payload);
+    document.getElementById('alerteSound').play();
+    new Notification(payload.notification.title, { body: payload.notification.body });
+  });
+</script>
+</body>
+</html>
