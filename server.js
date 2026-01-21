@@ -1,18 +1,26 @@
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebase-key.json');
 
-firebase.initializeApp({
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "VOTRE_PROJET.firebaseapp.com",
-  projectId: "VOTRE_PROJET",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
 });
 
-const messaging = firebase.messaging();
+// Token FCM récupéré depuis le téléphone (PWA)
+const token = "TON_TOKEN_FCM";
 
-messaging.onBackgroundMessage(payload => {
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body
-  });
-});
+const alerts = [
+  {title: "Tempête", body: "Niveau 1"},
+  {title: "Orage", body: "Violent"},
+  {title: "Inondation", body: "Attention"},
+  // ... jusqu'à 60 alertes
+];
+
+// Exemple : envoyer la première alerte
+const message = {
+  notification: alerts[0],
+  token: token
+};
+
+admin.messaging().send(message)
+  .then(response => console.log("Alerte envoyée :", response))
+  .catch(error => console.error("Erreur :", error));

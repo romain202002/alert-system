@@ -9,12 +9,12 @@
 <body>
 <h1>FR-Alerte PWA</h1>
 <p>Notifications prêtes à recevoir les alertes</p>
-<audio id="alerteSound" src="alerte1.mp3"></audio>
+<audio id="alerteSound" src="sounds/alerte1.mp3"></audio>
 
-<script src="firebase-app.js"></script>
-<script src="firebase-messaging.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <script>
-  // Config Firebase (remplace par ton projet)
+  // Configuration Firebase
   const firebaseConfig = {
     apiKey: "VOTRE_API_KEY",
     authDomain: "VOTRE_PROJET.firebaseapp.com",
@@ -26,18 +26,18 @@
 
   const messaging = firebase.messaging();
 
-  // Demande permission pour les notifications
+  // Demander permission pour notifications
   Notification.requestPermission().then(permission => {
     if(permission === 'granted'){
       messaging.getToken().then(token => {
-        console.log("TOKEN FCM:", token);
+        console.log("Token FCM du téléphone :", token);
       });
     }
   });
 
-  // Réception notification
+  // Notifications reçues quand la PWA est ouverte
   messaging.onMessage(payload => {
-    console.log('Message reçu', payload);
+    console.log('Message reçu:', payload);
     document.getElementById('alerteSound').play();
     new Notification(payload.notification.title, { body: payload.notification.body });
   });
