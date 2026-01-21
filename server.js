@@ -3,21 +3,36 @@ import admin from "firebase-admin";
 
 const app = express();
 
-// Vérifie la variable d'environnement
+// Check Firebase Key
 if (!process.env.FIREBASE_KEY) {
   console.error("ERREUR : FIREBASE_KEY non définie !");
   process.exit(1);
 }
 
-// Initialisation Firebase
+// Firebase Admin
 const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Servir les fichiers statiques dans "public"
+// Middleware pour JSON et fichiers statiques
+app.use(express.json());
 app.use(express.static("public"));
 
-// Port dynamique pour Railway
+// API pour déclencher alerte
+// POST /alert { "type": "alerte1", "message": "texte" }
+app.post("/alert", async (req, res) => {
+  const { type, message } = req.body;
+  if (!type || !message) return res.status(400).send("type & message required");
+
+  console.log(`Alerte déclenchée: ${type} - ${message}`);
+  
+  // TODO: envoyer notification Firebase à tous les appareils
+  // Exemple : admin.messaging().sendToDevice([...tokens], {...})
+  
+  res.send("Alerte envoyée !");
+});
+
+// Port dynamique Railway
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

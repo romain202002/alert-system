@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <title>Client Alertes</title>
+<meta charset="UTF-8">
+<title>Alertes FR Privées</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Alertes FR privées</h1>
-  <p>Page test notifications</p>
+  <h1>Alertes FR Privées</h1>
+  <div id="alertContainer"></div>
+
+  <script>
+    const sounds = [];
+    for (let i = 1; i <= 60; i++) {
+      sounds.push(new Audio(`sounds/alerte${i}.mp3`));
+    }
+
+    function playAlert(number, message) {
+      document.getElementById("alertContainer").innerHTML = `<h2>Alerte ${number}</h2><p>${message}</p>`;
+      if (sounds[number-1]) sounds[number-1].play();
+    }
+
+    // Exemple de test :
+    // playAlert(1, "Test Alerte Tempête");
+  </script>
 </body>
 </html>

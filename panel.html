@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <title>Panel Alertes</title>
+<meta charset="UTF-8">
+<title>Panel Alertes</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Panel Alertes</h1>
   <form id="alertForm">
-    <input type="text" name="title" placeholder="Titre de l'alerte" required><br>
-    <textarea name="body" placeholder="Message" required></textarea><br>
-    <button type="submit">Envoyer</button>
+    <select name="type">
+      <!-- 60 alertes FR-Alerte -->
+      <option value="1">Tempête</option>
+      <option value="2">Orage</option>
+      <option value="3">Inondation</option>
+      <option value="4">Tornade</option>
+      <!-- ... jusqu'à 60 -->
+    </select>
+    <input type="text" name="message" placeholder="Message" required>
+    <button type="submit">Déclencher</button>
   </form>
 
   <script>
@@ -17,12 +25,12 @@
     form.addEventListener("submit", async e => {
       e.preventDefault();
       const data = {
-        title: form.title.value,
-        body: form.body.value
+        type: form.type.value,
+        message: form.message.value
       };
       const res = await fetch("/alert", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(data)
       });
       alert(await res.text());
